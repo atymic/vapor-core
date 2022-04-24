@@ -5,7 +5,7 @@
         "laravel",
         "vapor"
     ],
-    "homepage": "https://github.com/laravel/vapor-core",
+    "homepage": "https://github.com/atymic/vapor-core",
     "license": "MIT",
     "authors": [
         {
@@ -27,7 +27,8 @@
         "nyholm/psr7": "^1.0",
         "riverline/multipart-parser": "^2.0.9",
         "symfony/process": "^4.3|^5.0|^6.0",
-        "symfony/psr-http-message-bridge": "^1.0|^2.0"
+        "symfony/psr-http-message-bridge": "^1.0|^2.0",
+        "vlucas/phpdotenv": "^5.3"
     },
     "require-dev": {
         "mockery/mockery": "^1.2",
