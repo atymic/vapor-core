@@ -9,12 +9,21 @@ Ideally this will be integrated into the core, but the Laravel team does not cur
 
 The change is very small and single, you can view it by diffing this fork against the official repo.
 
-### Using this package
+## Using this package
 
-- Swap your package from `laravel/vapor-core` to `atymic/vapor-core`
+- Update your `composer.json` to point your installation to the fork, using the `repositories` option.
+```json
+"repositories": [
+    {
+        "type": "github",
+        "url": "https://github.com/atymic/vapor-core"
+    }
+],
+```
+- Update your version to the latest tag (first release being 2.21.3), which will have the secrets code in it. Make sure to lock it to the specific version (otherwise, when laravel updates the mainline package you'll be upgraded and won't have the secret code). Subscribe to [release notifications on the repo](https://github.com/atymic/vapor-core) so you can update once we have released the new version.
 - Create an additional `.env` file, for example, `.env.extended` (make sure to gitignore). This file can be up to 10kb
 - Update your production deployment script to push the extended env file to a secret (i.e. `vapor secret --name DOT_ENV_EXTENDED  --file .env.extended production`)
-    - Any secret with a name prefixed with `DOT_ENV` will be loaded by laravel as a `env` file
+  - Any secret with a name prefixed with `DOT_ENV` will be loaded by laravel as a `env` file
 - Your app will load the additional secret file at runtime!
 
 
