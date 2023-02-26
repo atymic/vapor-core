@@ -96,7 +96,7 @@ class LambdaProxyOctaneHandlerTest extends TestCase
 
         Route::get('/', function (Request $request) {
             return response()->file(__DIR__.'/../Fixtures/asset.js', [
-                'Content-Type' => 'text/javascript',
+                'Content-Type' => 'text/javascript; charset=UTF-8',
             ]);
         });
 
@@ -110,7 +110,7 @@ class LambdaProxyOctaneHandlerTest extends TestCase
             ],
         ]);
 
-        static::assertEquals('text/javascript', $response->toApiGatewayFormat()['headers']['Content-Type']);
+        static::assertEquals('text/javascript; charset=UTF-8', $response->toApiGatewayFormat()['headers']['Content-Type']);
         static::assertEquals("console.log();\n", $response->toApiGatewayFormat()['body']);
     }
 
@@ -407,6 +407,33 @@ EOF
         );
     }
 
+    public function test_request_ignores_invalid_cookies()
+    {
+        $handler = new OctaneHandler();
+
+        Route::get('/', function (Request $request) {
+            return $request->cookies->all();
+        });
+
+        $response = $handler->handle([
+            'version' => '2.0',
+            'requestContext' => [
+                'http' => [
+                    'method' => 'GET',
+                    'path' => '/',
+                ],
+            ],
+            'headers' => [
+                'cookie' => 'cookieKey1; cookieKey2=cookieValue2',
+            ],
+        ]);
+
+        static::assertEquals(
+            ['cookieKey2' => 'cookieValue2'],
+            json_decode($response->toApiGatewayFormat()['body'], true)
+        );
+    }
+
     public function test_request_file_uploads()
     {
         $handler = new OctaneHandler();
@@ -621,7 +648,7 @@ EOF
         $body = $response->toApiGatewayFormat()['body'];
 
         static::assertEquals(['my-token'], json_decode($body, true)['x-xsrf-token']);
-        static::assertEquals(['value2'], json_decode($body, true)['x-multi-header']);
+        static::assertEquals(['value1,value2'], json_decode($body, true)['x-multi-header']);
     }
 
     public function test_maintenance_mode_with_valid_bypass_cookie()

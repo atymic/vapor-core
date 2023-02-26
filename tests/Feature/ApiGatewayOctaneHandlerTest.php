@@ -86,7 +86,7 @@ class ApiGatewayOctaneHandlerTest extends TestCase
 
         Route::get('/', function (Request $request) {
             return response()->file(__DIR__.'/../Fixtures/asset.js', [
-                'Content-Type' => 'text/javascript',
+                'Content-Type' => 'text/javascript; charset=UTF-8',
             ]);
         });
 
@@ -95,7 +95,7 @@ class ApiGatewayOctaneHandlerTest extends TestCase
             'path' => '/',
         ]);
 
-        static::assertEquals('text/javascript', $response->toApiGatewayFormat()['headers']['Content-Type']);
+        static::assertEquals('text/javascript; charset=UTF-8', $response->toApiGatewayFormat()['headers']['Content-Type']);
         static::assertEquals("console.log();\n", $response->toApiGatewayFormat()['body']);
     }
 
@@ -329,6 +329,28 @@ EOF
 
         static::assertEquals(
             ['XSRF-TOKEN' => 'token_value'],
+            json_decode($response->toApiGatewayFormat()['body'], true)
+        );
+    }
+
+    public function test_request_ignores_invalid_cookies()
+    {
+        $handler = new OctaneHandler();
+
+        Route::get('/', function (Request $request) {
+            return $request->cookies->all();
+        });
+
+        $response = $handler->handle([
+            'httpMethod' => 'GET',
+            'path' => '/',
+            'headers' => [
+                'cookie' => 'cookieKey1; cookieKey2=cookieValue2',
+            ],
+        ]);
+
+        static::assertEquals(
+            ['cookieKey2' => 'cookieValue2'],
             json_decode($response->toApiGatewayFormat()['body'], true)
         );
     }

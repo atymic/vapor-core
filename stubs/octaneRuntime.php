@@ -1,12 +1,15 @@
 <?php
 
 use Illuminate\Contracts\Console\Kernel as ConsoleKernelContract;
+use Laravel\Vapor\Runtime\Environment;
 use Laravel\Vapor\Runtime\LambdaContainer;
 use Laravel\Vapor\Runtime\LambdaRuntime;
 use Laravel\Vapor\Runtime\Octane\Octane;
 use Laravel\Vapor\Runtime\Octane\OctaneHttpHandlerFactory;
 use Laravel\Vapor\Runtime\Secrets;
 use Laravel\Vapor\Runtime\StorageDirectories;
+
+$app = require __DIR__.'/bootstrap/app.php';
 
 /*
 |--------------------------------------------------------------------------
@@ -21,11 +24,24 @@ use Laravel\Vapor\Runtime\StorageDirectories;
 
 fwrite(STDERR, 'Preparing to add secrets to runtime'.PHP_EOL);
 
-$secrets = Secrets::addToEnvironment(
+Secrets::addToEnvironment(
     $_ENV['VAPOR_SSM_PATH'],
     json_decode($_ENV['VAPOR_SSM_VARIABLES'] ?? '[]', true),
     __DIR__.'/vaporSecrets.php'
 );
+
+/*
+|--------------------------------------------------------------------------
+| Inject Decrypted Environment Variables
+|--------------------------------------------------------------------------
+|
+| Next, we will check to see whether a decryption key has been set on the
+| environment. If so, we will attempt to discover an encrypted file at
+| the root of the application and decrypt it into the Vapor runtime.
+|
+*/
+
+Environment::decrypt($app);
 
 /*
 |--------------------------------------------------------------------------
@@ -38,15 +54,13 @@ $secrets = Secrets::addToEnvironment(
 |
 */
 
-with(require __DIR__.'/bootstrap/app.php', function ($app) {
-    StorageDirectories::create();
+StorageDirectories::create();
 
-    $app->useStoragePath(StorageDirectories::PATH);
+$app->useStoragePath(StorageDirectories::PATH);
 
-    fwrite(STDERR, 'Caching Laravel configuration'.PHP_EOL);
+fwrite(STDERR, 'Caching Laravel configuration'.PHP_EOL);
 
-    $app->make(ConsoleKernelContract::class)->call('config:cache');
-});
+$app->make(ConsoleKernelContract::class)->call('config:cache');
 
 /*
 |--------------------------------------------------------------------------
