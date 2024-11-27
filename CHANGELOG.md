@@ -1,6 +1,12 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/vapor-core/compare/v2.37.1...2.0)
+## [Unreleased](https://github.com/laravel/vapor-core/compare/v2.37.2...2.0)
+
+## [v2.37.2](https://github.com/laravel/vapor-core/compare/v2.37.1...v2.37.2) - 2024-11-06
+
+* Add missing files in .github by [@Jubeki](https://github.com/Jubeki) in https://github.com/laravel/vapor-core/pull/178
+* [2.x] Reset scoped instances before running a new vapor job by [@themsaid](https://github.com/themsaid) in https://github.com/laravel/vapor-core/pull/183
+* Fix tests by [@themsaid](https://github.com/themsaid) in https://github.com/laravel/vapor-core/pull/184
 
 ## [v2.37.1](https://github.com/laravel/vapor-core/compare/v2.33.2...v2.37.1) - 2024-03-26
 
