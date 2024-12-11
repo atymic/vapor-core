@@ -38,7 +38,7 @@ class OctaneRequestContextFactory
             $request->serverVariables
         );
 
-        $serverRequest = $serverRequest->withCookieParams(static::cookies($request->headers));
+        $serverRequest = $serverRequest->withCookieParams(static::cookies($event, $request->headers));
 
         $serverRequest = $serverRequest->withUploadedFiles(static::uploadedFiles(
             $method, $contentType, $request->body
@@ -60,18 +60,25 @@ class OctaneRequestContextFactory
     /**
      * Get the cookies from the given headers.
      *
+     * @param  array  $event
      * @param  array  $headers
      * @return array
      */
-    protected static function cookies($headers)
+    protected static function cookies($event, $headers)
     {
-        $headers = array_change_key_case($headers);
+        if (isset($event['version']) && $event['version'] === '2.0') {
+            $cookies = $event['cookies'] ?? [];
+        } else {
+            $headers = array_change_key_case($headers);
 
-        if (! isset($headers['cookie']) || empty($headers['cookie'])) {
+            $cookies = isset($headers['cookie']) ? explode('; ', $headers['cookie']) : [];
+        }
+
+        if (empty($cookies)) {
             return [];
         }
 
-        return Collection::make(explode('; ', $headers['cookie']))->mapWithKeys(function ($cookie) {
+        return Collection::make($cookies)->mapWithKeys(function ($cookie) {
             $cookie = explode('=', trim($cookie), 2);
 
             $key = $cookie[0];

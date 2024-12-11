@@ -1,6 +1,10 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/vapor-core/compare/v2.37.2...2.0)
+## [Unreleased](https://github.com/laravel/vapor-core/compare/v2.37.8...2.0)
+
+## [v2.37.8](https://github.com/laravel/vapor-core/compare/v2.37.2...v2.37.8) - 2024-12-06
+
+* Fix Octane cookies for v2 by [@Vinimaks](https://github.com/Vinimaks) in https://github.com/laravel/vapor-core/pull/185
 
 ## [v2.37.2](https://github.com/laravel/vapor-core/compare/v2.37.1...v2.37.2) - 2024-11-06
 

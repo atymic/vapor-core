@@ -396,8 +396,8 @@ EOF
                     'path' => '/',
                 ],
             ],
-            'headers' => [
-                'cookie' => 'XSRF-TOKEN=token_value',
+            'cookies' => [
+                'XSRF-TOKEN=token_value',
             ],
         ]);
 
@@ -423,8 +423,9 @@ EOF
                     'path' => '/',
                 ],
             ],
-            'headers' => [
-                'cookie' => 'cookieKey1; cookieKey2=cookieValue2',
+            'cookies' => [
+                'cookieKey1',
+                'cookieKey2=cookieValue2',
             ],
         ]);
 
