@@ -1,6 +1,10 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/vapor-core/compare/v2.37.8...2.0)
+## [Unreleased](https://github.com/laravel/vapor-core/compare/v2.37.9...2.0)
+
+## [v2.37.9](https://github.com/laravel/vapor-core/compare/v2.37.8...v2.37.9) - 2024-12-11
+
+**Full Changelog**: https://github.com/atymic/vapor-core/compare/v2.37.2...v2.37.9
 
 ## [v2.37.8](https://github.com/laravel/vapor-core/compare/v2.37.2...v2.37.8) - 2024-12-06
 
