@@ -2,9 +2,9 @@
 
 ## [Unreleased](https://github.com/laravel/vapor-core/compare/v2.37.9...2.0)
 
-## [v2.37.9](https://github.com/laravel/vapor-core/compare/v2.37.8...v2.37.9) - 2024-12-11
+## [v2.37.9](https://github.com/laravel/vapor-core/compare/v2.37.8...v2.37.9) - 2025-01-07
 
-**Full Changelog**: https://github.com/atymic/vapor-core/compare/v2.37.2...v2.37.9
+* Fix parsing multidimensional array from multipart by [@Vinimaks](https://github.com/Vinimaks) in https://github.com/laravel/vapor-core/pull/186
 
 ## [v2.37.8](https://github.com/laravel/vapor-core/compare/v2.37.2...v2.37.8) - 2024-12-06
 
