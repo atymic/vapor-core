@@ -86,13 +86,13 @@ class Secrets
                     self::setEnvironmentVariables($parsedDotEnv);
 
                 } catch (InvalidFileException $e) {
-                    echo "Failed to parse dot env secret [{$key}] into runtime." . PHP_EOL;
+                    function_exists('__vapor_debug') && __vapor_debug("Failed to parse dot env secret [{$key}] into runtime.");
                 }
 
                 continue;
             }
 
-            echo "Injecting secret [{$key}] into runtime." . PHP_EOL;
+            function_exists('__vapor_debug') && __vapor_debug("Injecting secret [{$key}] into runtime.");
 
             $_ENV[$key] = $value;
             $_SERVER[$key] = $value;
