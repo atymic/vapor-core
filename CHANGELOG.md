@@ -1,6 +1,22 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/vapor-core/compare/v2.40.0...2.0)
+## [Unreleased](https://github.com/laravel/vapor-core/compare/v2.43.1...2.0)
+
+## [v2.43.1](https://github.com/laravel/vapor-core/compare/v2.43.0...v2.43.1) - 2026-01-20
+
+* fix: `curl_close()` is deprecated by [@mortenhauberg](https://github.com/mortenhauberg) in https://github.com/laravel/vapor-core/pull/198
+
+## [v2.43.0](https://github.com/laravel/vapor-core/compare/v2.42.0...v2.43.0) - 2026-01-08
+
+* Add dynamic cli handler factory. by [@Sfonxs](https://github.com/Sfonxs) in https://github.com/laravel/vapor-core/pull/197
+
+## [v2.42.0](https://github.com/laravel/vapor-core/compare/v2.41.0...v2.42.0) - 2025-12-19
+
+* Expose AWS Lambda execution context for Vapor logging by [@sahil7194](https://github.com/sahil7194) in https://github.com/laravel/vapor-core/pull/196
+
+## [v2.41.0](https://github.com/laravel/vapor-core/compare/v2.40.0...v2.41.0) - 2025-09-10
+
+* fix: Allow custom Lambda events from SQS by [@mathiasgrimm](https://github.com/mathiasgrimm) in https://github.com/laravel/vapor-core/pull/194
 
 ## [v2.40.0](https://github.com/laravel/vapor-core/compare/v2.39.0...v2.40.0) - 2025-08-04
 
