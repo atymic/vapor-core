@@ -1,6 +1,10 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/vapor-core/compare/v2.47.1...2.0)
+## [Unreleased](https://github.com/laravel/vapor-core/compare/v2.48.0...2.0)
+
+## [v2.48.0](https://github.com/laravel/vapor-core/compare/v2.47.1...v2.48.0) - 2026-11-25
+
+Upstream laravel/vapor-core v2.48.0 plus DOT_ENV_ secret expansion. Picks up the source IP fix: x-vapor-source-ip can no longer be overwritten by a header alias like x_vapor_source_ip.
 
 ## [v2.47.1](https://github.com/laravel/vapor-core/compare/v2.47.0...v2.47.1) - 2026-10-30
 
