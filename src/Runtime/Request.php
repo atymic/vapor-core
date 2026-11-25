@@ -75,6 +75,10 @@ class Request
             'SERVER_SOFTWARE' => 'vapor',
         ]);
 
+        if (isset($event['rawQueryString'])) {
+            $serverVariables['VAPOR_RAW_QUERY_STRING'] = $event['rawQueryString'];
+        }
+
         if ($handler) {
             $serverVariables['SCRIPT_FILENAME'] = $handler;
         }
@@ -91,12 +95,12 @@ class Request
             $event, $headers, $serverVariables, $requestBody
         );
 
-        $headers = static::ensureSourceIpAddressIsSet(
-            $event, $headers
-        );
-
         foreach ($headers as $header => $value) {
             $serverVariables['HTTP_'.strtoupper(str_replace('-', '_', $header))] = $value;
+        }
+
+        if ($sourceIP = static::extractSourceIP($event)) {
+            $serverVariables['HTTP_X_VAPOR_SOURCE_IP'] = $sourceIP;
         }
 
         return new static($serverVariables, $requestBody, $headers);
@@ -178,16 +182,26 @@ class Request
     protected static function getHeaders(array $event)
     {
         if (! isset($event['multiValueHeaders'])) {
-            return array_change_key_case(
+            $headers = array_change_key_case(
                 $event['headers'] ?? [], CASE_LOWER
+            );
+        } else {
+            $headers = array_change_key_case(
+                collect($event['multiValueHeaders'] ?? [])
+                    ->mapWithKeys(function ($headers, $name) {
+                        if (strtolower($name) === 'cookie') {
+                            return [$name => implode('; ', $headers)];
+                        }
+
+                        return [$name => Arr::last($headers)];
+                    })->all(), CASE_LOWER
             );
         }
 
-        return array_change_key_case(
-            collect($event['multiValueHeaders'] ?? [])
-                ->mapWithKeys(function ($headers, $name) {
-                    return [$name => Arr::last($headers)];
-                })->all(), CASE_LOWER
+        return array_filter(
+            $headers,
+            fn ($header) => preg_match('/^[a-z0-9-]+$/', (string) $header) === 1,
+            ARRAY_FILTER_USE_KEY
         );
     }
 
@@ -255,20 +269,19 @@ class Request
      * Ensure the request headers contain a source IP address.
      *
      * @param  array  $event
-     * @param  array  $headers
      * @return array
      */
-    protected static function ensureSourceIpAddressIsSet(array $event, array $headers)
+    protected static function extractSourceIP(array $event)
     {
         if (isset($event['requestContext']['identity']['sourceIp'])) {
-            $headers['x-vapor-source-ip'] = $event['requestContext']['identity']['sourceIp'];
+            return $event['requestContext']['identity']['sourceIp'];
         }
 
         if (isset($event['requestContext']['http']['sourceIp'])) {
-            $headers['x-vapor-source-ip'] = $event['requestContext']['http']['sourceIp'];
+            return $event['requestContext']['http']['sourceIp'];
         }
 
-        return $headers;
+        return null;
     }
 
     /**

@@ -116,6 +116,34 @@ class FpmRequestTest extends TestCase
         );
     }
 
+    public function test_vapor_raw_query_string_server_variable_is_set_when_raw_query_string_is_present()
+    {
+        $request = FpmRequest::fromLambdaEvent([
+            'version' => '2.0',
+            'requestContext' => [
+                'http' => [
+                    'method' => 'GET',
+                    'protocol' => 'HTTP/1.1',
+                ],
+            ],
+            'rawQueryString' => 'key1=value1&key2[]=value2&key2[]=value3',
+        ]);
+
+        $this->assertSame(
+            'key1=value1&key2[]=value2&key2[]=value3',
+            $request->serverVariables['VAPOR_RAW_QUERY_STRING']
+        );
+    }
+
+    public function test_vapor_raw_query_string_server_variable_is_not_set_when_raw_query_string_is_absent()
+    {
+        $request = FpmRequest::fromLambdaEvent([
+            'httpMethod' => 'GET',
+        ]);
+
+        $this->assertArrayNotHasKey('VAPOR_RAW_QUERY_STRING', $request->serverVariables);
+    }
+
     public function test_load_balancer_headers_are_over_spoofed_headers()
     {
         $request = FpmRequest::fromLambdaEvent([
@@ -226,5 +254,138 @@ class FpmRequestTest extends TestCase
         ]);
 
         $this->assertArrayNotHasKey('AWS_API_GATEWAY_REQUEST_TIME', $request->serverVariables);
+    }
+
+    public function test_multi_value_cookie_header_preserves_all_cookies()
+    {
+        $request = FpmRequest::fromLambdaEvent([
+            'httpMethod' => 'GET',
+            'multiValueHeaders' => [
+                'Cookie' => [
+                    'cookie_a=abc',
+                    'cookie_b=def',
+                ],
+            ],
+        ]);
+
+        $this->assertSame('cookie_a=abc; cookie_b=def', $request->serverVariables['HTTP_COOKIE']);
+    }
+
+    public function test_api_gateway_rest_modern_tls_payload_preserves_all_cookies()
+    {
+        $request = FpmRequest::fromLambdaEvent([
+            'resource' => '/{proxy+}',
+            'path' => '/api/shared/auth/who-am-i-cookie',
+            'httpMethod' => 'GET',
+            'headers' => [
+                'cookie' => 'cookie_b=refresh-value',
+            ],
+            'multiValueHeaders' => [
+                'cookie' => [
+                    'cookie_a=access-value',
+                    'cookie_b=refresh-value',
+                ],
+            ],
+            'requestContext' => [
+                'protocol' => 'HTTP/1.1',
+            ],
+        ]);
+
+        $this->assertSame(
+            'cookie_a=access-value; cookie_b=refresh-value',
+            $request->serverVariables['HTTP_COOKIE']
+        );
+    }
+
+    public function test_api_gateway_rest_legacy_tls_payload_preserves_all_cookies()
+    {
+        $request = FpmRequest::fromLambdaEvent([
+            'resource' => '/{proxy+}',
+            'path' => '/api/shared/auth/who-am-i-cookie',
+            'httpMethod' => 'GET',
+            'headers' => [
+                'cookie' => 'cookie_a=access-value; cookie_b=refresh-value',
+            ],
+            'multiValueHeaders' => [
+                'cookie' => [
+                    'cookie_a=access-value; cookie_b=refresh-value',
+                ],
+            ],
+            'requestContext' => [
+                'protocol' => 'HTTP/1.1',
+            ],
+        ]);
+
+        $this->assertSame(
+            'cookie_a=access-value; cookie_b=refresh-value',
+            $request->serverVariables['HTTP_COOKIE']
+        );
+    }
+
+    public function test_underscore_header_names_are_filtered_out()
+    {
+        $request = FpmRequest::fromLambdaEvent([
+            'httpMethod' => 'POST',
+            'multiValueHeaders' => [
+                'X-Vapor-Source-Ip' => ['5.6.7.8'],
+                'X_Vapor_Source_Ip' => ['9.9.9.9'],
+            ],
+        ]);
+
+        // The legitimate header should be set, spoofed underscore header should not override it
+        $this->assertSame('5.6.7.8', $request->serverVariables['HTTP_X_VAPOR_SOURCE_IP']);
+    }
+
+    public function test_period_header_names_are_filtered_out()
+    {
+        $request = FpmRequest::fromLambdaEvent([
+            'httpMethod' => 'POST',
+            'headers' => [
+                'x-vapor-source-ip' => '5.6.7.8',
+                'x.vapor.source.ip' => '9.9.9.9',
+            ],
+        ]);
+
+        // The legitimate header should be set, spoofed period header should be filtered
+        $this->assertSame('5.6.7.8', $request->serverVariables['HTTP_X_VAPOR_SOURCE_IP']);
+    }
+
+    public function test_x_forwarded_for_header_is_not_overridden_by_underscore_variant()
+    {
+        $request = FpmRequest::fromLambdaEvent([
+            'httpMethod' => 'GET',
+            'multiValueHeaders' => [
+                'X-Forwarded-For' => ['172.105.167.153'],
+                'X_Forwarded_For' => ['7.7.7.7'],
+            ],
+        ]);
+
+        $this->assertSame('172.105.167.153', $request->serverVariables['HTTP_X_FORWARDED_FOR']);
+    }
+
+    public function test_x_forwarded_port_header_is_not_overridden_by_underscore_variant()
+    {
+        $request = FpmRequest::fromLambdaEvent([
+            'httpMethod' => 'GET',
+            'multiValueHeaders' => [
+                'X-Forwarded-Port' => ['443'],
+                'X_Forwarded_Port' => ['1337'],
+            ],
+        ]);
+
+        $this->assertSame('443', $request->serverVariables['HTTP_X_FORWARDED_PORT']);
+    }
+
+    public function test_x_forwarded_proto_header_is_not_overridden_by_underscore_variant()
+    {
+        $request = FpmRequest::fromLambdaEvent([
+            'httpMethod' => 'GET',
+            'multiValueHeaders' => [
+                'X-Forwarded-Proto' => ['https'],
+                'X_Forwarded_Proto' => ['http'],
+            ],
+        ]);
+
+        $this->assertSame('https', $request->serverVariables['HTTP_X_FORWARDED_PROTO']);
     }
 }

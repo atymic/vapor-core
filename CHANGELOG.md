@@ -1,6 +1,43 @@
 # Release Notes
 
-## [Unreleased](https://github.com/laravel/vapor-core/compare/v2.43.3...2.0)
+## [Unreleased](https://github.com/laravel/vapor-core/compare/v2.47.1...2.0)
+
+## [v2.47.1](https://github.com/laravel/vapor-core/compare/v2.47.0...v2.47.1) - 2026-10-30
+
+## [v2.47.0](https://github.com/laravel/vapor-core/compare/v2.46.0...v2.47.0) - 2026-08-26
+
+* Supports Guzzle 8 by [@crynobone](https://github.com/crynobone) in https://github.com/laravel/vapor-core/pull/217
+
+## [v2.46.0](https://github.com/laravel/vapor-core/compare/v2.45.0...v2.46.0) - 2026-08-11
+
+* Use raw query string when present by [@timacdonald](https://github.com/timacdonald) in https://github.com/laravel/vapor-core/pull/214
+* Revert "Use raw query string when present (#214)" by [@timacdonald](https://github.com/timacdonald) in https://github.com/laravel/vapor-core/pull/215
+* Provide the raw query string as a custom server variable by [@timacdonald](https://github.com/timacdonald) in https://github.com/laravel/vapor-core/pull/216
+
+## [v2.45.0](https://github.com/laravel/vapor-core/compare/v2.44.0...v2.45.0) - 2026-08-04
+
+* Bump actions/checkout from 7.0.0 to 7.0.1 in the github-actions group by [@dependabot](https://github.com/dependabot)[bot] in https://github.com/laravel/vapor-core/pull/212
+* [2.x] Add support for Laravel 13 SQS overflow by [@MarcEspiard](https://github.com/MarcEspiard) in https://github.com/laravel/vapor-core/pull/213
+
+## [v2.44.0](https://github.com/laravel/vapor-core/compare/v2.43.5...v2.44.0) - 2026-06-23
+
+* Pin GitHub Actions to commit SHAs and add Dependabot config by [@joetannenbaum](https://github.com/joetannenbaum) in https://github.com/laravel/vapor-core/pull/204
+* fix(api-gateway): handle multi-value cookies correctly by [@BoyeMagnus](https://github.com/BoyeMagnus) in https://github.com/laravel/vapor-core/pull/205
+* Bump shivammathur/setup-php from 2.37.0 to 2.37.1 in the github-actions group across 1 directory by [@dependabot](https://github.com/dependabot)[bot] in https://github.com/laravel/vapor-core/pull/206
+* Add Dependabot cooldown of 5 days by [@nunomaduro](https://github.com/nunomaduro) in https://github.com/laravel/vapor-core/pull/207
+* Enable Dependabot auto-merge by [@nunomaduro](https://github.com/nunomaduro) in https://github.com/laravel/vapor-core/pull/208
+* Bump actions/checkout from 6.0.2 to 6.0.3 in the github-actions group by [@dependabot](https://github.com/dependabot)[bot] in https://github.com/laravel/vapor-core/pull/209
+* Bump shivammathur/setup-php from 2.37.1 to 2.37.2 in the github-actions group by [@dependabot](https://github.com/dependabot)[bot] in https://github.com/laravel/vapor-core/pull/210
+* Bump actions/checkout from 6.0.3 to 7.0.0 in the github-actions group by [@dependabot](https://github.com/dependabot)[bot] in https://github.com/laravel/vapor-core/pull/211
+
+## [v2.43.5](https://github.com/laravel/vapor-core/compare/v2.43.4...v2.43.5) - 2026-05-01
+
+* Allow Symfony 8 components for Laravel 13 support by [@jaumebalust](https://github.com/jaumebalust) in https://github.com/laravel/vapor-core/pull/203
+
+## [v2.43.4](https://github.com/laravel/vapor-core/compare/v2.43.3...v2.43.4) - 2026-04-22
+
+* [2.x] Fix test compatibility across Laravel 10-13 and PHPUnit 10-12 by [@JoshSalway](https://github.com/JoshSalway) in https://github.com/laravel/vapor-core/pull/201
+* Skip VaporServiceProvider registration on Laravel Cloud by [@kieranbrown](https://github.com/kieranbrown) in https://github.com/laravel/vapor-core/pull/202
 
 ## [v2.43.3](https://github.com/laravel/vapor-core/compare/v2.43.2...v2.43.3) - 2026-03-09
 
